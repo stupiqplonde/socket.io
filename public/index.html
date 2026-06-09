@@ -1,5 +1,51 @@
-<script src="/socket.io/socket.io.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat IO</title>
+</head>
+<body>
+    <div class="container" id="form">
+        <input type="text" class="form-control" id="text-message" placeholder="Сообщение"></input>
+        <button class="btn-primary" id="sendBtn">Отправить</button>
+    </div>
 
-<script>
-    let socket = io('http://localhost:8000');
-</script>
+    <div class="container" id="messages-container">
+        <ul id="messages-list">
+
+        </ul>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        const sendBtn = document.getElementById('sendBtn');
+        const input = document.getElementById('text-message');
+        const messages_list = document.querySelector('#messages-list')
+
+        let socket = io('http://localhost:8000');
+
+        socket.on('connect', (event) => {
+            console.log("Connection set!")
+        });
+
+        socket.on('newMessageFromClients', (data) => {
+            messages_list.innerHTML += `<li>${data}</li>`;
+        });
+
+        function sendMessage(){
+            let data = input.value;
+            socket.emit('newMessageFromServer', data);
+            input.value = null;
+        }
+
+        function messageFilter(){
+
+        }
+        
+        sendBtn.addEventListener('click', sendMessage);
+    </script>
+</body>
+</html>
+
